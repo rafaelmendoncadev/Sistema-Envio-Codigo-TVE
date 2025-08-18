@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db"
+}
+
+model UploadSession {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  totalCodes  Int      @default(0) @map("total_codes")
+  validCodes  Int      @default(0) @map("valid_codes")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  codes Code[]
+  
+  @@map("upload_sessions")
+}
+
+model Code {
+  id            Int       @id @default(autoincrement())
+  sessionId     Int       @map("session_id")
+  columnAValue  String?   @map("column_a_value")
+  columnDValue  String?   @map("column_d_value")
+  combinedCode  String    @map("combined_code")
+  rowNumber     Int       @map("row_number")
+  status        String    @default("available") // available, sent, archived
+  sentAt        DateTime? @map("sent_at")
+  archivedAt    DateTime? @map("archived_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  
+  session     UploadSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  historyItems HistoryItem[]
+  
+  @@map("codes")
+}
+
+model HistoryItem {
+  id          Int      @id @default(autoincrement())
+  codeId      Int?     @map("code_id")
+  actionType  String   @map("action_type") // send_whatsapp, send_email, archive, unarchive
+  destination String?
+  status      String   @default("success") // success, failed, pending
+  details     String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  code Code? @relation(fields: [codeId], references: [id], onDelete: SetNull)
+  
+  @@map("history_items")
+}
+
+model ApiSetting {
+  id             Int       @id @default(autoincrement())
+  serviceType    String    @unique @map("service_type") // whatsapp, email
+  encryptedConfig String   @map("encrypted_config")
+  isActive       Boolean   @default(true) @map("is_active")
+  lastTested     DateTime? @map("last_tested")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  
+  @@map("api_settings")
+}
