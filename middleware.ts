@@ -1,42 +1,32 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Rotas públicas que não precisam de autenticação
-const publicPaths = ['/login', '/api/auth/login']
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Lista de rotas públicas que não precisam de autenticação
+  const publicPaths = [
+    '/login',
+    '/api/auth/login',
+    '/api/auth/verify'
+  ]
+
   // Permitir acesso a rotas públicas
-  if (publicPaths.some(path => pathname.startsWith(path))) {
+  if (publicPaths.some(path => pathname === path || pathname.startsWith(path))) {
     return NextResponse.next()
   }
 
-  // Permitir acesso a arquivos estáticos
-  if (pathname.startsWith('/_next') || pathname.startsWith('/static')) {
+  // Permitir acesso a arquivos estáticos e recursos do Next.js
+  if (
+    pathname.startsWith('/_next') || 
+    pathname.startsWith('/static') ||
+    pathname.includes('.') // arquivos com extensão
+  ) {
     return NextResponse.next()
   }
 
-  // Verificar token para rotas da API
-  if (pathname.startsWith('/api')) {
-    const authHeader = request.headers.get('authorization')
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Não autorizado' },
-        { status: 401 }
-      )
-    }
-
-    // Token validation would happen here in production
-    // For now, just check if token exists
-    return NextResponse.next()
-  }
-
-  // Para rotas de página, verificar se está logado via cookies
-  // Por enquanto, vamos permitir acesso se tiver qualquer cookie de auth
-  // Em produção, isso deveria verificar o token JWT adequadamente
-  
+  // Por enquanto, permitir todas as requisições
+  // Em produção, implementar verificação completa de JWT
   return NextResponse.next()
 }
 
