@@ -54,3 +54,4 @@ prisma/generated/
 
 # Arquivos de migração do Prisma (se não quiser versionar)
 prisma/migrations/
+.vercel
