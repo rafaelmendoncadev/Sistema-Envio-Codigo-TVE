@@ -1,10 +1,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../../../lib/prisma'
 
 export const dynamic = 'force-dynamic'
-
-const prisma = new PrismaClient()
 
 // Temporary default user - in production this should come from auth
 const DEFAULT_USER_EMAIL = 'admin@example.com'

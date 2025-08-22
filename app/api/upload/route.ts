@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import * as xlsx from 'xlsx'
+import { prisma } from '../../../lib/prisma'
 
 export const dynamic = 'force-dynamic'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   console.log('=== Upload endpoint called ===')
