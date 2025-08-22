@@ -3,7 +3,9 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '../components/theme-provider'
-import { Navigation } from '../components/navigation'
+import { Sidebar } from '../components/sidebar'
+import { MainContent } from '../components/main-content'
+import { SidebarProvider } from '../contexts/sidebar-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,13 +28,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <Navigation />
-            <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-              {children}
-            </main>
-          </div>
-          <Toaster position="top-right" />
+          <SidebarProvider>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+              <Sidebar />
+              <MainContent>{children}</MainContent>
+            </div>
+            <Toaster position="top-right" />
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
