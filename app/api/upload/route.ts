@@ -19,6 +19,7 @@ async function getOrCreateDefaultUser() {
 
     // If not found, create a default user
     if (!user) {
+      console.log('Creating default admin user for upload...')
       user = await prisma.users.create({
         data: {
           email: DEFAULT_USER_EMAIL,
@@ -26,20 +27,13 @@ async function getOrCreateDefaultUser() {
           password_hash: 'admin123_temp', // Temporário
         }
       })
+      console.log('Admin user created:', user.id)
     }
 
     return user
   } catch (error) {
     console.error('Error getting/creating default user:', error)
-    // Se falhar, retornar um usuário temporário
-    return {
-      id: 'temp-admin-id',
-      email: DEFAULT_USER_EMAIL,
-      name: 'Admin User',
-      password_hash: 'temp',
-      created_at: new Date(),
-      updated_at: new Date()
-    }
+    throw new Error('Unable to get or create user for upload')
   }
 }
 
@@ -83,23 +77,43 @@ export async function POST(request: NextRequest) {
     }
 
     // Get or create default user
-    const user = await getOrCreateDefaultUser()
+    let user
+    try {
+      user = await getOrCreateDefaultUser()
+      console.log('User for upload:', user.id, user.email)
+    } catch (userError) {
+      console.error('Failed to get/create user:', userError)
+      return NextResponse.json({ 
+        error: 'Erro ao preparar usuário para upload' 
+      }, { status: 500 })
+    }
 
     // Create upload session
-    const session = await prisma.uploadSession.create({
-      data: {
-        user_id: user.id,
-        filename: file.name,
-        file_size: file.size,
-        totalCodes: 0,
-        processed_codes: 0,
-        status: 'processing',
-      },
-    })
+    let session
+    try {
+      session = await prisma.uploadSession.create({
+        data: {
+          user_id: user.id,
+          filename: file.name,
+          file_size: file.size,
+          totalCodes: 0,
+          processed_codes: 0,
+          status: 'processing',
+        },
+      })
+      console.log('Upload session created:', session.id)
+    } catch (sessionError) {
+      console.error('Failed to create upload session:', sessionError)
+      return NextResponse.json({ 
+        error: 'Erro ao criar sessão de upload. Verifique se o usuário está configurado corretamente.' 
+      }, { status: 500 })
+    }
 
     // Extract codes starting from row 3 (index 2)
     const codes = []
     let validCodesCount = 0
+
+    console.log(`Processing ${data.length - 2} potential codes...`)
 
     for (let i = 2; i < data.length; i++) {
       const row = data[i] as any[]
@@ -109,21 +123,28 @@ export async function POST(request: NextRequest) {
       if (columnAValue || columnDValue) {
         const combinedCode = `${columnAValue} - ${columnDValue}`
         
-        const code = await prisma.code.create({
-          data: {
-            sessionId: session.id,
-            columnAValue: columnAValue || null,
-            columnDValue: columnDValue || null,
-            combinedCode,
-            rowNumber: i + 1, // +1 because Excel rows are 1-indexed
-            status: 'available',
-          },
-        })
+        try {
+          const code = await prisma.code.create({
+            data: {
+              sessionId: session.id,
+              columnAValue: columnAValue || null,
+              columnDValue: columnDValue || null,
+              combinedCode,
+              rowNumber: i + 1, // +1 because Excel rows are 1-indexed
+              status: 'available',
+            },
+          })
 
-        codes.push(code)
-        validCodesCount++
+          codes.push(code)
+          validCodesCount++
+        } catch (codeError) {
+          console.error(`Failed to create code at row ${i + 1}:`, codeError)
+          // Continue processing other codes even if one fails
+        }
       }
     }
+
+    console.log(`Created ${validCodesCount} codes successfully`)
 
     // Update session with counts
     await prisma.uploadSession.update({
@@ -142,9 +163,24 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Upload error:', error)
+    console.error('Upload error details:', error)
+    
+    // Retornar mensagem de erro mais específica
+    let errorMessage = 'Erro ao processar arquivo'
+    
+    if (error instanceof Error) {
+      if (error.message.includes('user')) {
+        errorMessage = 'Erro ao identificar usuário. Faça login novamente.'
+      } else if (error.message.includes('session')) {
+        errorMessage = 'Erro ao criar sessão de upload.'
+      } else {
+        errorMessage = error.message
+      }
+    }
+    
     return NextResponse.json({ 
-      error: 'Erro interno do servidor ao processar arquivo' 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error : undefined
     }, { status: 500 })
   }
 }
