@@ -1,4 +1,4 @@
-# Qwen Code - Agente Especializado em Documentação e Configuração
+// Qwen Code - Agente Especializado em Documentação e Configuração
 
 export class DocumentationSpecialist {
   name: string;

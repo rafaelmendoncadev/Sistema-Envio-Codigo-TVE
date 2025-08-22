@@ -110,17 +110,19 @@ export function HistoryList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
           <div className="flex items-center space-x-2">
             <Calendar className="h-5 w-5 text-gray-600" />
-            <span>Histórico de Ações</span>
-            <Badge variant="secondary">{filteredHistory.length} registros</Badge>
+            <span className="text-lg sm:text-xl">Histórico de Ações</span>
           </div>
+          <Badge variant="secondary" className="self-start sm:self-auto">
+            {filteredHistory.length} registros
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-row sm:gap-4 mb-6">
           <Select value={actionFilter} onValueChange={setActionFilter}>
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Filtrar por ação" />
@@ -173,13 +175,15 @@ export function HistoryList() {
             {filteredHistory.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors space-y-2 sm:space-y-0"
               >
-                <div className="flex items-center space-x-3">
-                  {getActionIcon(item.actionType)}
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium text-gray-900">
+                <div className="flex items-start space-x-3">
+                  <div className="mt-0.5">
+                    {getActionIcon(item.actionType)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                      <span className="font-medium text-gray-900 text-sm sm:text-base">
                         {getActionLabel(item.actionType)}
                       </span>
                       <Badge className={getStatusColor(item.status)}>
@@ -187,18 +191,18 @@ export function HistoryList() {
                       </Badge>
                     </div>
                     {item.destination && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1">
                         Destino: {item.destination}
                       </p>
                     )}
                     {item.details && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1">
                         {item.details}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-xs sm:text-sm text-gray-500 self-start sm:self-auto">
                   {new Date(item.createdAt).toLocaleString('pt-BR')}
                 </div>
               </div>

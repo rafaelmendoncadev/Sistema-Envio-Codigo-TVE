@@ -88,7 +88,7 @@ export function EmailSettings() {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Mail className="h-5 w-5 text-blue-600" />
-            <span>Configurações de Email</span>
+            <span className="text-lg sm:text-xl">Configurações de Email</span>
           </div>
           {testStatus && (
             <div className="flex items-center space-x-1">
@@ -104,8 +104,8 @@ export function EmailSettings() {
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+      <CardContent className="space-y-3 sm:space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
             <Label htmlFor="smtp-host">Servidor SMTP</Label>
             <Input
@@ -163,14 +163,15 @@ export function EmailSettings() {
           </p>
         )}
 
-        <div className="flex space-x-2">
-          <Button onClick={saveSettings} className="flex-1">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <Button onClick={saveSettings} className="flex-1 w-full sm:w-auto">
             Salvar
           </Button>
           <Button
             variant="outline"
             onClick={testConnection}
             disabled={testing || !settings.smtpHost || !settings.smtpUser}
+            className="w-full sm:w-auto"
           >
             <TestTube className="h-4 w-4 mr-1" />
             {testing ? 'Testando...' : 'Testar'}

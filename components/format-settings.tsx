@@ -36,10 +36,10 @@ export function FormatSettings() {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Type className="h-5 w-5 text-blue-600" />
-          <span>Formato de Saída</span>
+          <span className="text-lg sm:text-xl">Formato de Saída</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         <div>
           <Label htmlFor="format">Formato personalizado</Label>
           <Input
@@ -58,7 +58,7 @@ export function FormatSettings() {
             <Eye className="h-4 w-4 text-gray-600" />
             <span className="text-sm font-medium text-gray-700">Preview:</span>
           </div>
-          <div className="font-mono text-lg font-semibold text-gray-900">
+          <div className="font-mono text-sm sm:text-lg font-semibold text-gray-900 break-all">
             {preview}
           </div>
         </div>

@@ -1,42 +1,39 @@
-
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Filter, Copy, CheckSquare, Square, Archive } from 'lucide-react'
+import { Search, Copy, CheckSquare, Square, Archive, ArchiveRestore } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
 import { Checkbox } from './ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Code } from '../lib/types'
 import { toast } from 'sonner'
 
-export function CodesGrid() {
+export function ArchivedCodesGrid() {
   const [codes, setCodes] = useState<Code[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
   const [selectedCodes, setSelectedCodes] = useState<string[]>([])
 
-  const fetchCodes = async () => {
+  const fetchArchivedCodes = async () => {
     try {
-      const response = await fetch('/api/codes')
+      const response = await fetch('/api/codes?status=archived')
       const data = await response.json()
       setCodes(data.codes || [])
     } catch (error) {
-      toast.error('Erro ao carregar códigos')
+      toast.error('Erro ao carregar códigos arquivados')
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchCodes()
+    fetchArchivedCodes()
     
     // Adicionar listener para o evento personalizado
     const handleCodesUpdated = () => {
-      fetchCodes()
+      fetchArchivedCodes()
     }
     
     window.addEventListener('codesUpdated', handleCodesUpdated)
@@ -51,35 +48,8 @@ export function CodesGrid() {
     const matchesSearch = code.combinedCode?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
                          code.columnAValue?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
                          code.columnDValue?.toLowerCase()?.includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || code.status === statusFilter
-    return matchesSearch && matchesStatus
+    return matchesSearch
   })
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-800'
-      case 'sent':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'archived':
-        return 'bg-gray-100 text-gray-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'Disponível'
-      case 'sent':
-        return 'Enviado'
-      case 'archived':
-        return 'Arquivado'
-      default:
-        return status
-    }
-  }
 
   const handleSelectCode = (codeId: string) => {
     setSelectedCodes(prev => 
@@ -97,7 +67,7 @@ export function CodesGrid() {
     }
   }
 
- const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
       toast.success('Código copiado para a área de transferência!')
@@ -127,35 +97,44 @@ export function CodesGrid() {
     }
   }
 
-  const handleArchive = async (codeIds: string[]) => {
+  const handleUnarchive = async (codeIds: string[]) => {
     try {
-      const response = await fetch('/api/codes/archive', {
+      const response = await fetch('/api/codes/unarchive', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code_ids: codeIds })
       })
 
       if (response.ok) {
-        toast.success('Códigos arquivados com sucesso!')
-        fetchCodes()
+        toast.success('Códigos desarquivados com sucesso!')
+        fetchArchivedCodes()
         setSelectedCodes([])
+        // Disparar evento para atualizar outros componentes
+        window.dispatchEvent(new CustomEvent('codesUpdated'))
       } else {
-        toast.error('Erro ao arquivar códigos')
+        toast.error('Erro ao desarquivar códigos')
       }
     } catch (error) {
-      toast.error('Erro ao arquivar códigos')
+      toast.error('Erro ao desarquivar códigos')
     }
   }
 
-
-
-
+  const formatDate = (date: Date | string) => {
+    const dateObj = date instanceof Date ? date : new Date(date)
+    return dateObj.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
 
   if (loading) {
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-gray-500">Carregando códigos...</p>
+          <p className="text-gray-500">Carregando códigos arquivados...</p>
         </CardContent>
       </Card>
     )
@@ -169,8 +148,8 @@ export function CodesGrid() {
             <Archive className="h-12 w-12 mx-auto mb-3" />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-900">Nenhum código encontrado</h3>
-            <p className="text-gray-500">Faça upload de uma planilha Excel para começar</p>
+            <h3 className="text-lg font-medium text-gray-900">Nenhum código arquivado</h3>
+            <p className="text-gray-500">Os códigos arquivados aparecerão aqui</p>
           </div>
         </CardContent>
       </Card>
@@ -184,7 +163,7 @@ export function CodesGrid() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center space-x-2">
-              <span>Códigos Extraídos</span>
+              <span>Códigos Arquivados</span>
               <Badge variant="secondary">{filteredCodes.length} códigos</Badge>
             </CardTitle>
             {selectedCodes.length > 0 && (
@@ -221,11 +200,11 @@ export function CodesGrid() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleArchive(selectedCodes)}
+                    onClick={() => handleUnarchive(selectedCodes)}
                     className="flex items-center justify-center space-x-2 w-full sm:w-auto"
                   >
-                    <Archive className="h-4 w-4" />
-                    <span>Arquivar</span>
+                    <ArchiveRestore className="h-4 w-4" />
+                    <span>Desarquivar</span>
                   </Button>
                </div>
              </div>
@@ -236,27 +215,15 @@ export function CodesGrid() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Buscar códigos..."
+                placeholder="Buscar códigos arquivados..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
             
-            {/* Filters and Actions */}
+            {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Filtrar por status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  <SelectItem value="available">Disponível</SelectItem>
-                  <SelectItem value="sent">Enviado</SelectItem>
-                  <SelectItem value="archived">Arquivado</SelectItem>
-                </SelectContent>
-              </Select>
-              
               <Button
                 variant="outline"
                 onClick={handleSelectAll}
@@ -284,8 +251,8 @@ export function CodesGrid() {
                       onCheckedChange={() => handleSelectCode(code.id)}
                       className="mt-1"
                     />
-                    <Badge className={getStatusColor(code.status)}>
-                      {getStatusLabel(code.status)}
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Arquivado
                     </Badge>
                   </div>
                   
@@ -297,10 +264,13 @@ export function CodesGrid() {
                       <p>Coluna A: {code.columnAValue || 'N/A'}</p>
                       <p>Coluna D: {code.columnDValue || 'N/A'}</p>
                       <p>Linha: {code.rowNumber}</p>
+                      {code.archivedAt && (
+                        <p>Arquivado em: {formatDate(code.archivedAt)}</p>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex justify-center">
+                  <div className="flex justify-center space-x-2">
                      <Button
                        size="sm"
                        variant="outline"
@@ -309,6 +279,15 @@ export function CodesGrid() {
                      >
                        <Copy className="h-3 w-3" />
                        <span className="text-xs hidden sm:inline">Copiar</span>
+                     </Button>
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       onClick={() => handleUnarchive([code.id])}
+                       className="flex items-center justify-center space-x-1"
+                     >
+                       <ArchiveRestore className="h-3 w-3" />
+                       <span className="text-xs hidden sm:inline">Desarquivar</span>
                      </Button>
                    </div>
                 </CardContent>

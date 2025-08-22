@@ -85,7 +85,7 @@ export function WhatsAppSettings() {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <MessageSquare className="h-5 w-5 text-green-600" />
-            <span>WhatsApp Business API</span>
+            <span className="text-lg sm:text-xl">WhatsApp Business API</span>
           </div>
           {testStatus && (
             <div className="flex items-center space-x-1">
@@ -101,7 +101,7 @@ export function WhatsAppSettings() {
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         <div>
           <Label htmlFor="access-token">Access Token</Label>
           <Input
@@ -139,14 +139,15 @@ export function WhatsAppSettings() {
           </p>
         )}
 
-        <div className="flex space-x-2">
-          <Button onClick={saveSettings} className="flex-1">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <Button onClick={saveSettings} className="flex-1 w-full sm:w-auto">
             Salvar
           </Button>
           <Button
             variant="outline"
             onClick={testConnection}
             disabled={testing || !settings.accessToken || !settings.phoneNumberId}
+            className="w-full sm:w-auto"
           >
             <TestTube className="h-4 w-4 mr-1" />
             {testing ? 'Testando...' : 'Testar'}

@@ -1,6 +1,83 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Mobile-first responsive utilities */
+@layer utilities {
+  /* Touch-friendly tap targets */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Safe area for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Mobile-optimized scrolling */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Prevent zoom on input focus (iOS) */
+  .no-zoom {
+    font-size: 16px;
+  }
+  
+  /* Mobile-friendly text sizes */
+  .text-mobile-xs { font-size: 0.75rem; }
+  .text-mobile-sm { font-size: 0.875rem; }
+  .text-mobile-base { font-size: 1rem; }
+  .text-mobile-lg { font-size: 1.125rem; }
+  .text-mobile-xl { font-size: 1.25rem; }
+  
+  /* Mobile spacing utilities */
+  .space-mobile-1 { gap: 0.25rem; }
+  .space-mobile-2 { gap: 0.5rem; }
+  .space-mobile-3 { gap: 0.75rem; }
+  .space-mobile-4 { gap: 1rem; }
+  
+  /* Mobile-optimized grid */
+  .grid-mobile-1 { grid-template-columns: 1fr; }
+  .grid-mobile-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-mobile-auto { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+}
+
+/* Mobile-specific component styles */
+@layer components {
+  /* Mobile card optimization */
+  .mobile-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+  
+  /* Mobile button optimization */
+  .mobile-btn {
+    @apply tap-target;
+    @apply px-4 py-2 sm:px-6 sm:py-3;
+    @apply text-sm sm:text-base;
+  }
+  
+  /* Mobile form optimization */
+  .mobile-input {
+    @apply no-zoom;
+    @apply h-10 sm:h-11;
+    @apply px-3 py-2;
+  }
+  
+  /* Mobile navigation */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0;
+    @apply bg-white border-t shadow-lg;
+    @apply safe-area-bottom;
+  }
+}
  
 @layer base {
   :root {

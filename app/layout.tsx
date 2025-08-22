@@ -28,7 +28,7 @@ export default function RootLayout({
         >
           <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <Navigation />
-            <main className="container mx-auto max-w-7xl px-4 py-8">
+            <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
               {children}
             </main>
           </div>

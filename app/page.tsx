@@ -5,13 +5,13 @@ import { CodesGrid } from '../components/codes-grid'
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900">
+      <div className="text-center space-y-2 px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Sistema de Códigos de Recarga
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
           Faça upload de planilhas Excel para extrair e gerenciar códigos de recarga automaticamente
         </p>
       </div>
