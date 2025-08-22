@@ -12,7 +12,8 @@
       "Bash(npm run dev:*)",
       "Bash(curl:*)",
       "mcp__neon__describe_table_schema",
-      "mcp__neon__run_sql"
+      "mcp__neon__run_sql",
+      "Bash(del middleware.ts)"
     ],
     "deny": [],
     "ask": []

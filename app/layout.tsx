@@ -6,7 +6,6 @@ import { ThemeProvider } from '../components/theme-provider'
 import { Sidebar } from '../components/sidebar'
 import { MainContent } from '../components/main-content'
 import { SidebarProvider } from '../contexts/sidebar-context'
-import { AuthGuard } from '../components/auth-guard'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,15 +28,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthGuard>
-            <SidebarProvider>
-              <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-                <Sidebar />
-                <MainContent>{children}</MainContent>
-              </div>
-              <Toaster position="top-right" />
-            </SidebarProvider>
-          </AuthGuard>
+          <SidebarProvider>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+              <Sidebar />
+              <MainContent>{children}</MainContent>
+            </div>
+            <Toaster position="top-right" />
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
