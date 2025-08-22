@@ -7,7 +7,8 @@
       "mcp__neon__get_database_tables",
       "mcp__neon__get_connection_string",
       "Bash(npx prisma:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
