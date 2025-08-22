@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update codes status to archived
-    await prisma.code.updateMany({
+    const result = await prisma.code.updateMany({
       where: { 
         id: { in: code_ids } 
       },
@@ -27,20 +27,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create history entries
-    for (const codeId of code_ids) {
-      await prisma.historyItem.create({
-        data: {
-          codeId,
-          actionType: 'archive',
-          status: 'success',
-        },
-      })
-    }
+    console.log(`Archived ${result.count} codes`)
 
     return NextResponse.json({
       success: true,
-      archived_count: code_ids.length,
+      archived_count: result.count,
     })
 
   } catch (error) {

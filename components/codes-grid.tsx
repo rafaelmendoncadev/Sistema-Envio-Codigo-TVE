@@ -2,13 +2,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Filter, Copy, CheckSquare, Square, Archive } from 'lucide-react'
+import { Search, Copy, CheckSquare, Square, Archive } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
 import { Checkbox } from './ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Code } from '../lib/types'
 import { toast } from 'sonner'
 
@@ -16,12 +15,11 @@ export function CodesGrid() {
   const [codes, setCodes] = useState<Code[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
   const [selectedCodes, setSelectedCodes] = useState<string[]>([])
 
   const fetchCodes = async () => {
     try {
-      const response = await fetch('/api/codes')
+      const response = await fetch('/api/codes?status=available')
       const data = await response.json()
       setCodes(data.codes || [])
     } catch (error) {
@@ -51,8 +49,7 @@ export function CodesGrid() {
     const matchesSearch = code.combinedCode?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
                          code.columnAValue?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
                          code.columnDValue?.toLowerCase()?.includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || code.status === statusFilter
-    return matchesSearch && matchesStatus
+    return matchesSearch
   })
 
   const getStatusColor = (status: string) => {
@@ -129,20 +126,26 @@ export function CodesGrid() {
 
   const handleArchive = async (codeIds: string[]) => {
     try {
+      console.log('Archiving codes:', codeIds)
       const response = await fetch('/api/codes/archive', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code_ids: codeIds })
       })
 
+      const data = await response.json()
+      console.log('Archive response:', data)
+
       if (response.ok) {
-        toast.success('Códigos arquivados com sucesso!')
+        toast.success(`${data.archived_count} códigos arquivados com sucesso!`)
         fetchCodes()
         setSelectedCodes([])
       } else {
-        toast.error('Erro ao arquivar códigos')
+        console.error('Archive error:', data)
+        toast.error(data.error || 'Erro ao arquivar códigos')
       }
     } catch (error) {
+      console.error('Archive exception:', error)
       toast.error('Erro ao arquivar códigos')
     }
   }
@@ -243,20 +246,8 @@ export function CodesGrid() {
               />
             </div>
             
-            {/* Filters and Actions */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Filtrar por status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  <SelectItem value="available">Disponível</SelectItem>
-                  <SelectItem value="sent">Enviado</SelectItem>
-                  <SelectItem value="archived">Arquivado</SelectItem>
-                </SelectContent>
-              </Select>
-              
+            {/* Action Button */}
+            <div className="flex justify-end">
               <Button
                 variant="outline"
                 onClick={handleSelectAll}

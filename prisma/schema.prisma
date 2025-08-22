@@ -1,67 +1,87 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model UploadSession {
-  id          Int      @id @default(autoincrement())
-  filename    String
-  totalCodes  Int      @default(0) @map("total_codes")
-  validCodes  Int      @default(0) @map("valid_codes")
-  createdAt   DateTime @default(now()) @map("created_at")
-  
-  codes Code[]
-  
+  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id         String         @db.Uuid
+  filename        String         @db.VarChar(255)
+  file_size       Int?
+  totalCodes      Int?           @default(0) @map("total_codes")
+  processed_codes Int?           @default(0)
+  status          String?        @default("processing") @db.VarChar(50)
+  createdAt       DateTime?      @default(now()) @map("created_at") @db.Timestamp(6)
+  updated_at      DateTime?      @default(now()) @db.Timestamp(6)
+  codes           Code[]
+  send_history    send_history[]
+  users           users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_upload_sessions_user_id")
   @@map("upload_sessions")
 }
 
 model Code {
-  id            Int       @id @default(autoincrement())
-  sessionId     Int       @map("session_id")
-  columnAValue  String?   @map("column_a_value")
-  columnDValue  String?   @map("column_d_value")
-  combinedCode  String    @map("combined_code")
-  rowNumber     Int       @map("row_number")
-  status        String    @default("available") // available, sent, archived
-  sentAt        DateTime? @map("sent_at")
-  archivedAt    DateTime? @map("archived_at")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  session     UploadSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  historyItems HistoryItem[]
-  
+  id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sessionId    String        @map("session_id") @db.Uuid
+  columnAValue String?       @map("column_a_value")
+  columnDValue String?       @map("column_d_value")
+  combinedCode String        @map("combined_code")
+  rowNumber    Int           @map("row_number")
+  status       String?       @default("available") @db.VarChar(20)
+  sentAt       DateTime?     @map("sent_at") @db.Timestamp(6)
+  archivedAt   DateTime?     @map("archived_at") @db.Timestamp(6)
+  createdAt    DateTime?     @default(now()) @map("created_at") @db.Timestamp(6)
+  session      UploadSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([sessionId], map: "idx_codes_session_id")
+  @@index([status], map: "idx_codes_status")
   @@map("codes")
 }
 
-model HistoryItem {
-  id          Int      @id @default(autoincrement())
-  codeId      Int?     @map("code_id")
-  actionType  String   @map("action_type") // send_whatsapp, send_email, archive, unarchive
-  destination String?
-  status      String   @default("success") // success, failed, pending
-  details     String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  
-  code Code? @relation(fields: [codeId], references: [id], onDelete: SetNull)
-  
-  @@map("history_items")
+model ApiSetting {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @db.Uuid
+  serviceType String    @map("service_type") @db.VarChar(50)
+  config_data Json
+  isActive    Boolean?  @default(true) @map("is_active")
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, serviceType])
+  @@index([user_id, serviceType], map: "idx_api_settings_user_service")
+  @@map("api_settings")
 }
 
-model ApiSetting {
-  id             Int       @id @default(autoincrement())
-  serviceType    String    @unique @map("service_type") // whatsapp, email
-  encryptedConfig String   @map("encrypted_config")
-  isActive       Boolean   @default(true) @map("is_active")
-  lastTested     DateTime? @map("last_tested")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-  
-  @@map("api_settings")
+model send_history {
+  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id         String         @db.Uuid
+  session_id      String?        @db.Uuid
+  action_type     String         @db.VarChar(50)
+  destination     String?        @db.VarChar(255)
+  codes_count     Int?           @default(0)
+  status          String?        @default("pending") @db.VarChar(50)
+  error_message   String?
+  created_at      DateTime?      @default(now()) @db.Timestamp(6)
+  upload_sessions UploadSession? @relation(fields: [session_id], references: [id], onUpdate: NoAction)
+  users           users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_send_history_user_id")
+}
+
+model users {
+  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email           String          @unique @db.VarChar(255)
+  password_hash   String          @db.VarChar(255)
+  name            String          @db.VarChar(255)
+  created_at      DateTime?       @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?       @default(now()) @db.Timestamp(6)
+  api_settings    ApiSetting[]
+  send_history    send_history[]
+  upload_sessions UploadSession[]
 }

@@ -7,6 +7,34 @@ export const dynamic = 'force-dynamic'
 
 const prisma = new PrismaClient()
 
+// Temporary default user ID - in production this should come from auth
+const DEFAULT_USER_EMAIL = 'admin@example.com'
+
+async function getOrCreateDefaultUser() {
+  try {
+    // Try to find existing user
+    let user = await prisma.users.findUnique({
+      where: { email: DEFAULT_USER_EMAIL }
+    })
+
+    // If not found, create a default user
+    if (!user) {
+      user = await prisma.users.create({
+        data: {
+          email: DEFAULT_USER_EMAIL,
+          name: 'Admin User',
+          password_hash: 'temporary_hash', // In production, use proper auth
+        }
+      })
+    }
+
+    return user
+  } catch (error) {
+    console.error('Error getting/creating default user:', error)
+    throw error
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -46,12 +74,18 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Get or create default user
+    const user = await getOrCreateDefaultUser()
+
     // Create upload session
     const session = await prisma.uploadSession.create({
       data: {
+        user_id: user.id,
         filename: file.name,
+        file_size: file.size,
         totalCodes: 0,
-        validCodes: 0,
+        processed_codes: 0,
+        status: 'processing',
       },
     })
 
@@ -88,7 +122,8 @@ export async function POST(request: NextRequest) {
       where: { id: session.id },
       data: {
         totalCodes: data.length - 2, // Subtract header rows
-        validCodes: validCodesCount,
+        processed_codes: validCodesCount,
+        status: 'completed',
       },
     })
 
