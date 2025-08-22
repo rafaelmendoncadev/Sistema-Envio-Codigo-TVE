@@ -19,11 +19,28 @@ export function CodesGrid() {
 
   const fetchCodes = async () => {
     try {
+      console.log('Fetching codes from /api/codes?status=available')
       const response = await fetch('/api/codes?status=available')
+      console.log('Response status:', response.status)
+      
+      if (!response.ok) {
+        console.error('Response not OK:', response.status, response.statusText)
+      }
+      
       const data = await response.json()
-      setCodes(data.codes || [])
+      console.log('Data received:', data)
+      
+      if (data.codes) {
+        console.log(`Setting ${data.codes.length} codes`)
+        setCodes(data.codes)
+      } else {
+        console.log('No codes field in response, setting empty array')
+        setCodes([])
+      }
     } catch (error) {
+      console.error('Error fetching codes:', error)
       toast.error('Erro ao carregar códigos')
+      setCodes([])
     } finally {
       setLoading(false)
     }
