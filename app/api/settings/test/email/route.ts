@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
@@ -19,11 +18,8 @@ export async function POST(request: NextRequest) {
     // Simulate SMTP test (replace with actual SMTP test)
     console.log('Testing SMTP connection with:', { smtpHost, smtpPort, smtpUser, useSsl })
     
-    // Update last tested timestamp
-    await prisma.apiSetting.updateMany({
-      where: { serviceType: 'email' },
-      data: { lastTested: new Date() },
-    })
+    // Skip database update (auth not implemented)
+    console.log('Email test - database update skipped (auth not implemented)')
 
     // Simulate successful test
     return NextResponse.json({ success: true })

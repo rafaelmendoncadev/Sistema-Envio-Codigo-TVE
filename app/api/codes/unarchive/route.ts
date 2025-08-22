@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update codes status to available
-    await prisma.code.updateMany({
+    const result = await prisma.code.updateMany({
       where: { 
         id: { in: code_ids } 
       },
@@ -27,20 +27,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Create history entries
-    for (const codeId of code_ids) {
-      await prisma.historyItem.create({
-        data: {
-          codeId,
-          actionType: 'unarchive',
-          status: 'success',
-        },
-      })
-    }
+    console.log(`Unarchived ${result.count} codes`)
 
     return NextResponse.json({
       success: true,
-      unarchived_count: code_ids.length,
+      unarchived_count: result.count,
     })
 
   } catch (error) {

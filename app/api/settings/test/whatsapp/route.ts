@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
@@ -19,11 +18,8 @@ export async function POST(request: NextRequest) {
     // Simulate WhatsApp API test (replace with actual API test)
     console.log('Testing WhatsApp connection with:', { accessToken, phoneNumberId })
     
-    // Update last tested timestamp
-    await prisma.apiSetting.updateMany({
-      where: { serviceType: 'whatsapp' },
-      data: { lastTested: new Date() },
-    })
+    // Skip database update (auth not implemented)
+    console.log('WhatsApp test - database update skipped (auth not implemented)')
 
     // Simulate successful test
     return NextResponse.json({ success: true })

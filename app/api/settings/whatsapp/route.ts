@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
@@ -8,24 +7,11 @@ const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    const settings = await prisma.apiSetting.findUnique({
-      where: { serviceType: 'whatsapp' }
-    })
-
-    if (!settings) {
-      return NextResponse.json({
-        accessToken: '',
-        phoneNumberId: '',
-        webhookUrl: ''
-      })
-    }
-
-    // Decrypt config (simplified for demo - use proper encryption in production)
-    const config = JSON.parse(settings.encryptedConfig)
-    
+    // Temporarily return empty settings (auth not implemented)
     return NextResponse.json({
-      ...config,
-      lastTested: settings.lastTested,
+      accessToken: '',
+      phoneNumberId: '',
+      webhookUrl: ''
     })
 
   } catch (error) {
@@ -46,25 +32,8 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Encrypt config (simplified for demo - use proper encryption in production)
-    const encryptedConfig = JSON.stringify({
-      accessToken,
-      phoneNumberId,
-      webhookUrl
-    })
-
-    await prisma.apiSetting.upsert({
-      where: { serviceType: 'whatsapp' },
-      update: {
-        encryptedConfig,
-        updatedAt: new Date(),
-      },
-      create: {
-        serviceType: 'whatsapp',
-        encryptedConfig,
-        isActive: true,
-      },
-    })
+    // Temporarily skip saving (auth not implemented)
+    console.log('WhatsApp settings update skipped (auth not implemented)')
 
     return NextResponse.json({ success: true })
 

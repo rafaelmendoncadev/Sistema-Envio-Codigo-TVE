@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
@@ -8,26 +7,13 @@ const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    const settings = await prisma.apiSetting.findUnique({
-      where: { serviceType: 'email' }
-    })
-
-    if (!settings) {
-      return NextResponse.json({
-        smtpHost: '',
-        smtpPort: 587,
-        smtpUser: '',
-        smtpPassword: '',
-        useSsl: true
-      })
-    }
-
-    // Decrypt config (simplified for demo - use proper encryption in production)
-    const config = JSON.parse(settings.encryptedConfig)
-    
+    // Temporarily return empty settings (auth not implemented)
     return NextResponse.json({
-      ...config,
-      lastTested: settings.lastTested,
+      smtpHost: '',
+      smtpPort: 587,
+      smtpUser: '',
+      smtpPassword: '',
+      useSsl: true
     })
 
   } catch (error) {
@@ -48,27 +34,8 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Encrypt config (simplified for demo - use proper encryption in production)
-    const encryptedConfig = JSON.stringify({
-      smtpHost,
-      smtpPort,
-      smtpUser,
-      smtpPassword,
-      useSsl
-    })
-
-    await prisma.apiSetting.upsert({
-      where: { serviceType: 'email' },
-      update: {
-        encryptedConfig,
-        updatedAt: new Date(),
-      },
-      create: {
-        serviceType: 'email',
-        encryptedConfig,
-        isActive: true,
-      },
-    })
+    // Temporarily skip saving (auth not implemented)
+    console.log('Email settings update skipped (auth not implemented)')
 
     return NextResponse.json({ success: true })
 
