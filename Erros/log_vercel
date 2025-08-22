@@ -1,101 +1,99 @@
-[14:03:33.745] Running build in Washington, D.C., USA (East) – iad1
-[14:03:33.745] Build machine configuration: 2 cores, 8 GB
-[14:03:33.760] Cloning github.com/rafaelmendoncadev/Sistema-Envio-Codigo-TVE (Branch: main, Commit: c61b9d3)
-[14:03:34.080] Cloning completed: 320.000ms
-[14:03:34.125] Found .vercelignore
-[14:03:34.135] Removed 24 ignored files defined in .vercelignore
-[14:03:34.135]   /.git/config
-[14:03:34.135]   /.git/description
-[14:03:34.135]   /.git/FETCH_HEAD
-[14:03:34.135]   /.git/HEAD
-[14:03:34.135]   /.git/hooks/applypatch-msg.sample
-[14:03:34.135]   /.git/hooks/commit-msg.sample
-[14:03:34.136]   /.git/hooks/fsmonitor-watchman.sample
-[14:03:34.136]   /.git/hooks/post-update.sample
-[14:03:34.136]   /.git/hooks/pre-applypatch.sample
-[14:03:34.136]   /.git/hooks/pre-commit.sample
-[14:03:35.171] Restored build cache from previous deployment (7KFDi2i585ZDTPz8Cyoa1xNVr3a8)
-[14:03:35.699] Running "vercel build"
-[14:03:36.140] Vercel CLI 46.0.2
-[14:03:37.303] Installing dependencies...
-[14:03:41.542] npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
-[14:03:42.395] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-[14:03:42.466] npm warn deprecated mumath@3.3.4: Redundant dependency in your project.
-[14:03:43.558] npm warn deprecated @types/xlsx@0.0.36: This is a stub types definition for xlsx (https://github.com/sheetjs/js-xlsx). xlsx provides its own type definitions, so you don't need @types/xlsx installed!
-[14:03:44.862] npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
-[14:03:44.891] npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
-[14:03:45.761] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-[14:03:49.745] npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
-[14:04:06.001] 
-[14:04:06.002] > postinstall
-[14:04:06.002] > prisma generate
-[14:04:06.002] 
-[14:04:06.642] Prisma schema loaded from prisma/schema.prisma
-[14:04:06.756] Warning: You did not specify an output path for your `generator` in schema.prisma. This behavior is deprecated and will no longer be supported in Prisma 7.0.0. To learn more visit https://pris.ly/cli/output-path
-[14:04:06.874] 
-[14:04:06.875] ✔ Generated Prisma Client (v6.7.0) to ./node_modules/@prisma/client in 47ms
-[14:04:06.875] 
-[14:04:06.875] Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-[14:04:06.875] 
-[14:04:06.875] Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
-[14:04:06.875] 
-[14:04:06.956] 
-[14:04:06.956] added 740 packages, removed 322 packages, and changed 60 packages in 29s
-[14:04:06.958] 
-[14:04:06.958] 195 packages are looking for funding
-[14:04:06.958]   run `npm fund` for details
-[14:04:07.148] 
-[14:04:07.149] > build
-[14:04:07.149] > next build
-[14:04:07.150] 
-[14:04:07.745] Attention: Next.js now collects completely anonymous telemetry regarding usage.
-[14:04:07.746] This information is used to shape Next.js' roadmap and prioritize features.
-[14:04:07.746] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-[14:04:07.746] https://nextjs.org/telemetry
-[14:04:07.746] 
-[14:04:07.810]   ▲ Next.js 14.2.28
-[14:04:07.811]   - Experiments (use with caution):
-[14:04:07.811]     · outputFileTracingRoot
-[14:04:07.812] 
-[14:04:07.877]    Creating an optimized production build ...
-[14:04:26.266]  ✓ Compiled successfully
-[14:04:26.267]    Skipping linting
-[14:04:26.267]    Checking validity of types ...
-[14:04:34.531]    Collecting page data ...
-[14:04:35.983]    Generating static pages (0/7) ...
-[14:04:36.248]    Generating static pages (1/7) 
-[14:04:36.278]    Generating static pages (3/7) 
-[14:04:36.835]    Generating static pages (5/7) 
-[14:04:36.951]  ✓ Generating static pages (7/7)
-[14:04:37.159]    Finalizing page optimization ...
-[14:04:37.160]    Collecting build traces ...
-[14:04:42.561] 
-[14:04:42.571] Route (app)                              Size     First Load JS
-[14:04:42.572] ┌ ○ /                                    21.6 kB         151 kB
-[14:04:42.572] ├ ○ /_not-found                          873 B            88 kB
-[14:04:42.572] ├ ƒ /api/codes                           0 B                0 B
-[14:04:42.572] ├ ƒ /api/codes/archive                   0 B                0 B
-[14:04:42.572] ├ ƒ /api/codes/unarchive                 0 B                0 B
-[14:04:42.572] ├ ƒ /api/history                         0 B                0 B
-[14:04:42.573] ├ ƒ /api/send/email                      0 B                0 B
-[14:04:42.573] ├ ƒ /api/send/whatsapp                   0 B                0 B
-[14:04:42.573] ├ ƒ /api/settings/email                  0 B                0 B
-[14:04:42.573] ├ ƒ /api/settings/test/email             0 B                0 B
-[14:04:42.573] ├ ƒ /api/settings/test/whatsapp          0 B                0 B
-[14:04:42.573] ├ ƒ /api/settings/whatsapp               0 B                0 B
-[14:04:42.573] ├ ƒ /api/statistics                      0 B                0 B
-[14:04:42.573] ├ ƒ /api/upload                          0 B                0 B
-[14:04:42.573] ├ ○ /arquivo                             3.57 kB         110 kB
-[14:04:42.573] ├ ○ /configuracoes                       5.01 kB         111 kB
-[14:04:42.573] └ ○ /historico                           5.33 kB         123 kB
-[14:04:42.574] + First Load JS shared by all            87.1 kB
-[14:04:42.574]   ├ chunks/117-c3d3dc8c766243ed.js       31.6 kB
-[14:04:42.574]   ├ chunks/fd9d1056-b6bd4111191f2b98.js  53.6 kB
-[14:04:42.575]   └ other shared chunks (total)          1.9 kB
-[14:04:42.575] 
-[14:04:42.575] 
-[14:04:42.575] ○  (Static)   prerendered as static content
-[14:04:42.575] ƒ  (Dynamic)  server-rendered on demand
-[14:04:42.575] 
-[14:04:42.611] Error: No Output Directory named "dist" found after the Build completed. You can configure the Output Directory in your Project Settings.
-[14:04:42.611] Learn More: https://vercel.link/missing-public-directory
+[14:12:34.428] Running build in Washington, D.C., USA (East) – iad1
+[14:12:34.429] Build machine configuration: 2 cores, 8 GB
+[14:12:34.443] Cloning github.com/rafaelmendoncadev/Sistema-Envio-Codigo-TVE (Branch: main, Commit: 60bfdf1)
+[14:12:34.774] Cloning completed: 331.000ms
+[14:12:34.805] Found .vercelignore
+[14:12:34.810] Removed 24 ignored files defined in .vercelignore
+[14:12:34.810]   /.git/config
+[14:12:34.810]   /.git/description
+[14:12:34.810]   /.git/FETCH_HEAD
+[14:12:34.810]   /.git/HEAD
+[14:12:34.810]   /.git/hooks/applypatch-msg.sample
+[14:12:34.810]   /.git/hooks/commit-msg.sample
+[14:12:34.810]   /.git/hooks/fsmonitor-watchman.sample
+[14:12:34.810]   /.git/hooks/post-update.sample
+[14:12:34.810]   /.git/hooks/pre-applypatch.sample
+[14:12:34.810]   /.git/hooks/pre-commit.sample
+[14:12:35.740] Restored build cache from previous deployment (7KFDi2i585ZDTPz8Cyoa1xNVr3a8)
+[14:12:36.302] Running "vercel build"
+[14:12:36.744] Vercel CLI 46.0.2
+[14:12:37.501] Installing dependencies...
+[14:12:41.708] npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+[14:12:42.556] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+[14:12:42.661] npm warn deprecated mumath@3.3.4: Redundant dependency in your project.
+[14:12:43.829] npm warn deprecated @types/xlsx@0.0.36: This is a stub types definition for xlsx (https://github.com/sheetjs/js-xlsx). xlsx provides its own type definitions, so you don't need @types/xlsx installed!
+[14:12:45.245] npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+[14:12:45.291] npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+[14:12:45.994] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+[14:12:49.559] npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+[14:13:04.548] 
+[14:13:04.548] > postinstall
+[14:13:04.549] > prisma generate
+[14:13:04.549] 
+[14:13:05.171] Prisma schema loaded from prisma/schema.prisma
+[14:13:05.284] Warning: You did not specify an output path for your `generator` in schema.prisma. This behavior is deprecated and will no longer be supported in Prisma 7.0.0. To learn more visit https://pris.ly/cli/output-path
+[14:13:05.400] 
+[14:13:05.401] ✔ Generated Prisma Client (v6.7.0) to ./node_modules/@prisma/client in 45ms
+[14:13:05.401] 
+[14:13:05.401] Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+[14:13:05.401] 
+[14:13:05.402] Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+[14:13:05.402] 
+[14:13:05.473] 
+[14:13:05.475] added 740 packages, removed 322 packages, and changed 60 packages in 28s
+[14:13:05.476] 
+[14:13:05.476] 195 packages are looking for funding
+[14:13:05.477]   run `npm fund` for details
+[14:13:05.722] 
+[14:13:05.722] > build
+[14:13:05.722] > next build
+[14:13:05.722] 
+[14:13:06.345] Attention: Next.js now collects completely anonymous telemetry regarding usage.
+[14:13:06.345] This information is used to shape Next.js' roadmap and prioritize features.
+[14:13:06.346] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[14:13:06.346] https://nextjs.org/telemetry
+[14:13:06.346] 
+[14:13:06.409]   ▲ Next.js 14.2.28
+[14:13:06.409] 
+[14:13:06.476]    Creating an optimized production build ...
+[14:13:24.003]  ✓ Compiled successfully
+[14:13:24.004]    Skipping linting
+[14:13:24.004]    Checking validity of types ...
+[14:13:32.107]    Collecting page data ...
+[14:13:33.699]    Generating static pages (0/7) ...
+[14:13:34.267]    Generating static pages (1/7) 
+[14:13:34.327]    Generating static pages (3/7) 
+[14:13:34.389]    Generating static pages (5/7) 
+[14:13:34.466]  ✓ Generating static pages (7/7)
+[14:13:34.679]    Finalizing page optimization ...
+[14:13:34.680]    Collecting build traces ...
+[14:13:40.044] 
+[14:13:40.055] Route (app)                              Size     First Load JS
+[14:13:40.055] ┌ ○ /                                    21.6 kB         151 kB
+[14:13:40.055] ├ ○ /_not-found                          873 B            88 kB
+[14:13:40.055] ├ ƒ /api/codes                           0 B                0 B
+[14:13:40.055] ├ ƒ /api/codes/archive                   0 B                0 B
+[14:13:40.055] ├ ƒ /api/codes/unarchive                 0 B                0 B
+[14:13:40.056] ├ ƒ /api/history                         0 B                0 B
+[14:13:40.056] ├ ƒ /api/send/email                      0 B                0 B
+[14:13:40.056] ├ ƒ /api/send/whatsapp                   0 B                0 B
+[14:13:40.056] ├ ƒ /api/settings/email                  0 B                0 B
+[14:13:40.056] ├ ƒ /api/settings/test/email             0 B                0 B
+[14:13:40.056] ├ ƒ /api/settings/test/whatsapp          0 B                0 B
+[14:13:40.056] ├ ƒ /api/settings/whatsapp               0 B                0 B
+[14:13:40.056] ├ ƒ /api/statistics                      0 B                0 B
+[14:13:40.056] ├ ƒ /api/upload                          0 B                0 B
+[14:13:40.056] ├ ○ /arquivo                             3.57 kB         110 kB
+[14:13:40.056] ├ ○ /configuracoes                       5.01 kB         111 kB
+[14:13:40.057] └ ○ /historico                           5.33 kB         123 kB
+[14:13:40.059] + First Load JS shared by all            87.1 kB
+[14:13:40.060]   ├ chunks/117-c3d3dc8c766243ed.js       31.6 kB
+[14:13:40.060]   ├ chunks/fd9d1056-b6bd4111191f2b98.js  53.6 kB
+[14:13:40.060]   └ other shared chunks (total)          1.9 kB
+[14:13:40.060] 
+[14:13:40.060] 
+[14:13:40.061] ○  (Static)   prerendered as static content
+[14:13:40.061] ƒ  (Dynamic)  server-rendered on demand
+[14:13:40.061] 
+[14:13:40.093] Error: No Output Directory named "dist" found after the Build completed. You can configure the Output Directory in your Project Settings.
+[14:13:40.093] Learn More: https://vercel.link/missing-public-directory
