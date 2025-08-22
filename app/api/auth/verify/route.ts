@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
 
 export const dynamic = 'force-dynamic'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,14 +15,23 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1]
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as any
+      // Decodificar token simples
+      const decoded = JSON.parse(Buffer.from(token, 'base64').toString())
       
-      return NextResponse.json({
-        valid: true,
-        userId: decoded.userId,
-        email: decoded.email
-      })
-    } catch (jwtError) {
+      // Verificar se tem os campos necessários
+      if (decoded.userId && decoded.email) {
+        return NextResponse.json({
+          valid: true,
+          userId: decoded.userId,
+          email: decoded.email
+        })
+      }
+      
+      return NextResponse.json({ 
+        error: 'Token inválido' 
+      }, { status: 401 })
+      
+    } catch (decodeError) {
       return NextResponse.json({ 
         error: 'Token inválido ou expirado' 
       }, { status: 401 })
